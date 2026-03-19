@@ -1,0 +1,51 @@
+name: CI - Docker build + integration tests
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build images (compose)
+        run: docker compose -f docker-compose.yml build
+
+      - name: Start services
+        run: docker compose -f docker-compose.yml up -d
+
+      - name: Wait for backend health
+        run: |
+          for i in {1..60}; do
+            if curl -fsS http://127.0.0.1:8000/health > /dev/null; then
+              echo "Backend is healthy"
+              exit 0
+            fi
+            echo "Waiting for backend... ($i)"
+            sleep 2
+          done
+          echo "Backend did not become healthy"
+          docker compose -f docker-compose.yml logs
+          exit 1
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Postman integration tests (Newman)
+        run: |
+          newman run postman/Lab5_Hotel_API.postman_collection.json             -e postman/Lab5_Docker.postman_environment.json
+
+      - name: Logs (on failure)
+        if: failure()
+        run: docker compose -f docker-compose.yml logs
+
+      - name: Stop services
+        if: always()
+        run: docker compose -f docker-compose.yml down -v

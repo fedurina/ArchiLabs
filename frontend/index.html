@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Hotel NextGen — Demo UI</title>
+  <style>
+    :root{
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --primary: #2563eb;
+      --primary-600:#1d4ed8;
+      --danger:#dc2626;
+      --ok:#16a34a;
+      --shadow: 0 10px 25px rgba(17,24,39,.08);
+      --radius: 16px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color:var(--text);
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(37,99,235,.10), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(22,163,74,.08), transparent 60%),
+                  var(--bg);
+    }
+
+    header{
+      padding: 28px 18px 8px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .title-row{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    h1{
+      margin:0;
+      font-size: 34px;
+      letter-spacing:-0.02em;
+    }
+
+    .subtitle{
+      margin: 10px 0 0;
+      color: var(--muted);
+      line-height:1.45;
+      font-size: 14.5px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background: rgba(255,255,255,.7);
+      backdrop-filter: blur(6px);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .dot{
+      width:8px; height:8px; border-radius:999px;
+      background: var(--ok);
+      box-shadow: 0 0 0 4px rgba(22,163,74,.12);
+    }
+
+    main{
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 18px 28px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap:16px;
+      align-items: start;
+    }
+
+    .card{
+      grid-column: span 4;
+      background: var(--card);
+      border: 1px solid rgba(229,231,235,.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      overflow:hidden;
+    }
+
+    .card h2{
+      margin: 0 0 10px;
+      font-size: 18px;
+      letter-spacing:-0.01em;
+    }
+    .card p{
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.45;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    label{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom:6px;
+    }
+
+    input, select{
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      outline: none;
+      font-size: 14px;
+      background: #fff;
+      transition: box-shadow .15s ease, border-color .15s ease;
+    }
+    input:focus, select:focus{
+      border-color: rgba(37,99,235,.55);
+      box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+    }
+
+    .btn{
+      appearance:none;
+      border: 1px solid rgba(37,99,235,.25);
+      background: rgba(37,99,235,.10);
+      color: var(--primary-600);
+      font-weight: 600;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform .06s ease, background .15s ease, border-color .15s ease;
+      user-select:none;
+      white-space: nowrap;
+    }
+    .btn:hover{
+      background: rgba(37,99,235,.16);
+      border-color: rgba(37,99,235,.35);
+    }
+    .btn:active{
+      transform: translateY(1px);
+    }
+
+    .btn-primary{
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover{
+      background: var(--primary-600);
+      border-color: var(--primary-600);
+    }
+
+    .btn-ghost{
+      background: transparent;
+      border-color: var(--border);
+      color: var(--muted);
+    }
+
+    .json{
+      margin-top: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(229,231,235,.9);
+      background: linear-gradient(180deg, #0b1220, #0a0f1a);
+      color: #d1d5db;
+      padding: 12px 12px;
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.5;
+      max-height: 280px;
+      overflow: auto;
+      white-space: pre;
+    }
+
+    .meta{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(17,24,39,.04);
+      border:1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .pill.ok{ background: rgba(22,163,74,.10); border-color: rgba(22,163,74,.25); color: #166534; }
+    .pill.err{ background: rgba(220,38,38,.10); border-color: rgba(220,38,38,.25); color: #991b1b; }
+
+    .field{
+      margin-bottom: 12px;
+    }
+
+    .cols-2{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .toast{
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      z-index: 9999;
+    }
+    .toast-item{
+      min-width: 260px;
+      max-width: 360px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      font-size: 13.5px;
+      color: var(--text);
+    }
+    .toast-item strong{ display:block; margin-bottom:4px; }
+    .toast-item.ok{ border-color: rgba(22,163,74,.35); }
+    .toast-item.err{ border-color: rgba(220,38,38,.35); }
+
+    @media (max-width: 980px){
+      .card{ grid-column: span 12; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="title-row">
+    <div>
+      <h1>Hotel NextGen — Demo UI</h1>
+      <p class="subtitle">
+        Мини-интерфейс для ЛР5: <b>frontend (nginx)</b> → proxy → <b>backend (FastAPI)</b> → <b>PostgreSQL</b>.
+        API вызывается через <code>/api/v1/…</code> (nginx proxy).
+      </p>
+    </div>
+    <div class="badge" title="Если /health ок — значит связка жива">
+      <span class="dot"></span> services up
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="grid">
+    <!-- Rooms list -->
+    <section class="card" id="cardRooms">
+      <h2>Rooms — список</h2>
+      <p>Проверка чтения данных из БД через backend.</p>
+      <div class="row">
+        <button class="btn btn-primary" id="btnRooms">Обновить список</button>
+        <button class="btn btn-ghost" id="btnRoomsCopy">Скопировать JSON</button>
+      </div>
+      <div class="meta">
+        <span class="pill" id="roomsStatus">—</span>
+        <span id="roomsTime">—</span>
+      </div>
+      <pre class="json" id="outRooms">{}</pre>
+    </section>
+
+    <!-- Rooms create -->
+    <section class="card" id="cardCreateRoom">
+      <h2>Rooms — создать</h2>
+      <p>Создаёт номер и возвращает UUID. UUID автоматически подставится в бронирование.</p>
+
+      <div class="cols-2">
+        <div class="field">
+          <label for="roomNumber">Number</label>
+          <input id="roomNumber" value="305" />
+        </div>
+        <div class="field">
+          <label for="roomFloor">Floor</label>
+          <input id="roomFloor" type="number" value="3" min="0" max="200"/>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="roomType">Type</label>
+        <select id="roomType">
+          <option value="standard">standard</option>
+          <option value="comfort">comfort</option>
+          <option value="lux" selected>lux</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="roomStatus">Status</label>
+        <select id="roomStatus">
+          <option value="available" selected>available</option>
+          <option value="booked">booked</option>
+          <option value="ready">ready</option>
+          <option value="cleaning">cleaning</option>
+          <option value="maintenance">maintenance</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <button class="btn btn-primary" id="btnCreateRoom">Создать номер</button>
+        <button class="btn btn-ghost" id="btnCreateRoomRandom">Сделать номер уникальным</button>
+      </div>
+
+      <div class="meta">
+        <span class="pill" id="createRoomStatus">—</span>
+        <span id="createRoomTime">—</span>
+      </div>
+      <pre class="json" id="outCreateRoom">{}</pre>
+    </section>
+
+    <!-- Booking create -->
+    <section class="card" id="cardCreateBooking">
+      <h2>Bookings — создать</h2>
+      <p>Создаёт бронирование на выбранный <code>roomId</code> (UUID подставляется после создания номера).</p>
+
+      <div class="field">
+        <label for="guestId">Guest ID</label>
+        <input id="guestId" type="number" value="42" min="1"/>
+      </div>
+
+      <div class="field">
+        <label for="bookingRoomId">Room ID (UUID)</label>
+        <input id="bookingRoomId" placeholder="Создай номер — сюда подставится id" />
+      </div>
+
+      <div class="cols-2">
+        <div class="field">
+          <label for="checkIn">Check-in</label>
+          <input id="checkIn" type="date" />
+        </div>
+        <div class="field">
+          <label for="checkOut">Check-out</label>
+          <input id="checkOut" type="date" />
+        </div>
+      </div>
+
+      <div class="row">
+        <button class="btn btn-primary" id="btnCreateBooking">Создать бронирование</button>
+        <button class="btn btn-ghost" id="btnBookingCopy">Скопировать JSON</button>
+      </div>
+
+      <div class="meta">
+        <span class="pill" id="createBookingStatus">—</span>
+        <span id="createBookingTime">—</span>
+      </div>
+      <pre class="json" id="outCreateBooking">{}</pre>
+    </section>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
