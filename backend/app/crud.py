@@ -5,7 +5,9 @@ from uuid import UUID
 from sqlalchemy.orm import Session
 from sqlalchemy import select, and_
 
-from .models import Room, Booking, BookingStatus, RoomStatus, RoomType
+from .models import Room, Booking, BookingStatus, RoomStatus
+
+
 
 def overlap(a_start: date, a_end: date, b_start: date, b_end: date) -> bool:
     return not (a_end <= b_start or a_start >= b_end)
@@ -24,14 +26,14 @@ def list_rooms(db: Session, status: str | None, room_type: str | None, floor: in
     if status:
         q = q.where(Room.status == RoomStatus(status))
     if room_type:
-        q = q.where(Room.room_type == RoomType(room_type))
+        q = q.where(Room.room_type == room_type)
     if floor is not None:
         q = q.where(Room.floor == floor)
     q = q.offset(offset).limit(limit)
     return db.scalars(q).all()
 
 def create_room(db: Session, number: str, floor: int, room_type: str, status: str):
-    room = Room(number=number, floor=floor, room_type=RoomType(room_type), status=RoomStatus(status))
+    room = Room(number=number, floor=floor, room_type=room_type, status=RoomStatus(status))
     db.add(room); db.commit(); db.refresh(room)
     return room
 
@@ -44,7 +46,7 @@ def update_room(db: Session, room_id: UUID, number: str, floor: int, room_type: 
         return None
     room.number = number
     room.floor = floor
-    room.room_type = RoomType(room_type)
+    room.room_type = room_type
     room.status = RoomStatus(status)
     db.commit(); db.refresh(room)
     return room
